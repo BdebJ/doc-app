@@ -134,7 +134,7 @@ export const updateAppointmentSchema = Joi.object({
     })
 });
 export const updateAppointmentValidator: RequestHandler = (req, _res, next) => {
-  const { error } = updateAppointmentSchema.validate(req.body);
+  const { error } = updateAppointmentSchema.validate(req.query);
   if (error) throw new BadRequestError(error.details[0].message);
   next();
 };

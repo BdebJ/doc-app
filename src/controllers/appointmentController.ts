@@ -27,8 +27,8 @@ export const deleteAppointmentController: RequestHandler<unknown, DeleteAppointm
   return sendSuccessResponse(res, 200, 'Appointment deleted successfully', deletedAppointment);
 };
 
-export const updateAppointmentController: RequestHandler<unknown, UpdateAppointmentResponse, UpdateAppointmentQuery, unknown> = (req, res) => {
-  const { patientEmail, originalTimeSlot, newTimeSlot } = req.body;
+export const updateAppointmentController: RequestHandler<unknown, UpdateAppointmentResponse, unknown, UpdateAppointmentQuery> = (req, res) => {
+  const { patientEmail, originalTimeSlot, newTimeSlot } = req.query;
   const updatedAppointment: Appointment = updateAppointmentService({ patientEmail, originalTimeSlot, newTimeSlot });
   return sendSuccessResponse(res, 200, 'Appointment updated successfully', updatedAppointment);
 };
