@@ -80,36 +80,36 @@ describe(createAppointmentService, () => {
   });
 
   test('should throw ConflictError if time slot conflict even if doctors are diff, patient same', () => {
-    const testDoctor1: Doctor = { name: 'Dr. Clara Williams' };
-    const testDoctor2: Doctor = { name: 'Dr. Hailey Store' };
-    const testPatient: Patient = { firstName: 'Michael', lastName: 'Brown', email: 'michael.brown@example.com' };
-    const testTimeSlot = '10:00 - 11:00';
+    const doctor1: Doctor = { name: 'Dr. Clara Williams' };
+    const doctor2: Doctor = { name: 'Dr. Hailey Store' };
+    const patient: Patient = { firstName: 'Michael', lastName: 'Brown', email: 'michael.brown@example.com' };
+    const timeSlot = '10:00 - 11:00';
 
     appointments.push({
-      doctor: testDoctor1,
-      patient: testPatient,
-      timeSlot: testTimeSlot
+      doctor: doctor1,
+      patient: patient,
+      timeSlot: timeSlot
     });
 
     expect(() => {
-      createAppointmentService({ doctor: testDoctor2, patient: testPatient, timeSlot: testTimeSlot });
+      createAppointmentService({ doctor: doctor2, patient, timeSlot });
     }).toThrow(ConflictError);
   });
 
   test('should throw ConflictError if time slot conflict even if patients are diff, doctor same', () => {
-    const testDoctor: Doctor = { name: 'Dr. Clara Williams' };
-    const testPatient1: Patient = { firstName: 'Michael', lastName: 'Brown', email: 'michael.brown@example.com' };
-    const testPatient2: Patient = { firstName: 'Jake', lastName: 'Lawrence', email: 'jlaw@example.com' };
-    const testTimeSlot = '10:00 - 11:00';
+    const doctor: Doctor = { name: 'Dr. Clara Williams' };
+    const patient1: Patient = { firstName: 'Michael', lastName: 'Brown', email: 'michael.brown@example.com' };
+    const patient2: Patient = { firstName: 'Jake', lastName: 'Lawrence', email: 'jlaw@example.com' };
+    const timeSlot = '10:00 - 11:00';
 
     appointments.push({
-      doctor: testDoctor,
-      patient: testPatient1,
-      timeSlot: testTimeSlot
+      doctor: doctor,
+      patient: patient1,
+      timeSlot: timeSlot
     });
 
     expect(() => {
-      createAppointmentService({ doctor: testDoctor, patient: testPatient2, timeSlot: testTimeSlot });
+      createAppointmentService({ doctor, patient: patient2, timeSlot });
     }).toThrow(ConflictError);
   });
 
