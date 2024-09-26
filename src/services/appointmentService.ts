@@ -65,7 +65,7 @@ export const updateAppointmentService: UpdateAppointmentServiceFn = (updateAppoi
   return appointments[appointmentIndex];
 };
 
-const checkAppointmentAvailability = (doctor: Doctor, patient: Patient, timeSlot: string) => {
+export const checkAppointmentAvailability = (doctor: Doctor, patient: Patient, timeSlot: string) => {
   const [startTime, endTime] = timeSlot.split(' - ');
   const [startHour, startMinute] = startTime.split(':').map(Number);
   const [endHour, endMinute] = endTime.split(':').map(Number);
