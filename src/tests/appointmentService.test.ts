@@ -1,6 +1,6 @@
 import { appointments } from '../data/seedData';
 import { BadRequestError, ConflictError } from '../errors/ErrorTypes';
-import { checkAppointmentAvailability, createAppointmentService } from '../services/appointmentService';
+import { checkAppointmentAvailability, createAppointmentService, updateAppointmentService } from '../services/appointmentService';
 import { Doctor, Patient } from '../types/appointment';
 
 beforeEach(() => {
@@ -129,5 +129,102 @@ describe(createAppointmentService, () => {
     expect(() => {
       createAppointmentService({ doctor, patient, timeSlot });
     }).toThrow(BadRequestError);
+  });
+});
+
+describe(updateAppointmentService, () => {
+  beforeEach(() => {
+    appointments.length = 0;
+
+    appointments.push(
+      {
+        doctor: { name: 'Dr. Clara Williams' },
+        patient: { firstName: 'Michael', lastName: 'Brown', email: 'michael.brown@example.com' },
+        timeSlot: '10:00 - 11:00',
+      },
+      {
+        doctor: { name: 'Dr. Alice Smith' },
+        patient: { firstName: 'Michael', lastName: 'Brown', email: 'michael.brown@example.com' },
+        timeSlot: '14:00 - 15:00',
+      }
+    );
+  });
+
+  test('should update an appointment successfully', () => {
+    const patientEmail = 'michael.brown@example.com';
+    const originalTimeSlot = '14:00 - 15:00';
+    const newTimeSlot = '12:00 - 13:00';
+
+    const result = updateAppointmentService({ patientEmail, originalTimeSlot, newTimeSlot });
+    const expectedResult = {
+      doctor: { name: 'Dr. Alice Smith' },
+      patient: { firstName: 'Michael', lastName: 'Brown', email: 'michael.brown@example.com' },
+      timeSlot: '12:00 - 13:00',
+    };
+
+    expect(result).toEqual(expectedResult);
+    expect(appointments).toContainEqual(expectedResult);
+  });
+
+  test('should update an appointment successfully', () => {
+    const patientEmail = 'michael.brown@example.com';
+    const originalTimeSlot = '14:00 - 15:00';
+    const newTimeSlot = '12:00 - 13:00';
+
+    const result = updateAppointmentService({ patientEmail, originalTimeSlot, newTimeSlot });
+    const expectedResult = {
+      doctor: { name: 'Dr. Alice Smith' },
+      patient: { firstName: 'Michael', lastName: 'Brown', email: 'michael.brown@example.com' },
+      timeSlot: '12:00 - 13:00',
+    };
+
+    expect(result).toEqual(expectedResult);
+    expect(appointments).toContainEqual(expectedResult);
+  });
+
+  test('should throw BadRequestError if original appointment does not exist', () => {
+    const patientEmail = 'non.existent@example.com';
+    const originalTimeSlot = '14:00 - 15:00';
+    const newTimeSlot = '12:00 - 13:00';
+
+    expect(() => {
+      updateAppointmentService({ patientEmail, originalTimeSlot, newTimeSlot });
+    }).toThrow(BadRequestError);
+  });
+
+  test('should throw ConflictError if the new time slot is already booked', () => {
+    const patientEmail = 'michael.brown@example.com';
+    const originalTimeSlot = '10:00 - 11:00';
+    const newTimeSlot = '14:00 - 15:00';
+
+    expect(() => {
+      updateAppointmentService({ patientEmail, originalTimeSlot, newTimeSlot });
+    }).toThrow(ConflictError);
+  });
+
+  test('should throw BadRequestError if new time slot is outside working hours', () => {
+    const patientEmail = 'michael.brown@example.com';
+    const originalTimeSlot = '14:00 - 15:00';
+    const newTimeSlot = '07:00 - 08:00';
+
+    expect(() => {
+      updateAppointmentService({ patientEmail, originalTimeSlot, newTimeSlot });
+    }).toThrow(BadRequestError);
+  });
+
+  test('should update the appointment for different patient but same doctor', () => {
+    const patientEmail = 'michael.brown@example.com';
+    const originalTimeSlot = '14:00 - 15:00';
+    const newTimeSlot = '12:00 - 13:00';
+
+    updateAppointmentService({ patientEmail, originalTimeSlot, newTimeSlot });
+
+    const newAppointment = {
+      doctor: { name: 'Dr. Alice Smith' },
+      patient: { firstName: 'Michael', lastName: 'Brown', email: 'michael.brown@example.com' },
+      timeSlot: '12:00 - 13:00',
+    };
+
+    expect(appointments).toContainEqual(newAppointment);
   });
 });
